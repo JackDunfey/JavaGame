@@ -1,0 +1,1 @@
+c: && cd c:\Users\jackd\OneDrive\Documents\GitHub\JavaGame && cmd /C ""C:\Program Files\Java\jdk-17.0.2\bin\java.exe" --module-path C:/Users/jackd/Downloads/openjfx-18_windows-x64_bin-sdk/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml -XX:+ShowCodeDetailsInExceptionMessages @C:\Users\jackd\AppData\Local\Temp\cp_67c2b3wrmagj175vglc83ec28.argfile game.App "
