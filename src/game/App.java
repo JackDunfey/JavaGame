@@ -39,6 +39,9 @@ public class App extends Application {
             if(game.currentlyActiveKeys.contains(s))
                 game.currentlyActiveKeys.remove(s);
         });
+        gameScene.setOnMouseClicked(event -> {
+            game.player.shoot(event.getSceneX(), event.getSceneY());
+        });
         new AnimationTimer(){
             public void handle(long currentNanoTime){
                 game.update();
