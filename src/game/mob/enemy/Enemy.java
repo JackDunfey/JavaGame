@@ -10,8 +10,4 @@ public abstract class Enemy extends Mob {
         this.speed = 1;
     }
     abstract public void attackPlayer();
-    @Override
-    public String toString(){
-        return "Enemy @ (" + this.getPosition().toString() + ")";
-    }
 }

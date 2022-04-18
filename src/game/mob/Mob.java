@@ -1,5 +1,6 @@
 package game.mob;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import game.Geometry;
@@ -22,7 +23,6 @@ public class Mob {
     private Point2D position;
     private double angle;
     protected double speed;
-    private float angle_speed;
     public static char width = 25;
     public static char height = 75;
     private Color color;
@@ -34,7 +34,6 @@ public class Mob {
         this.direction = new Direction();
         this.color = color;
         this.speed = 2;
-        this.angle_speed = 2;
     }
     public Point2D getPosition(){
         return position;
@@ -45,21 +44,25 @@ public class Mob {
     // Movement (animate?)
     public void update(){
         if(this.direction.forward)
-            this.forward(this.speed);
+            this.move("forward", this.speed);
         if(this.direction.backward)
-            this.forward(-this.speed);
+            this.move("backward", this.speed);
         if(this.direction.right)
-            this.angle += this.angle_speed;
+            this.move("right", this.speed);
         if(this.direction.left)
-            this.angle -= this.angle_speed;
+            this.move("left", this.speed);
     }
     public void facePoint(Point2D point){
         // Change this to PID
         this.angle = Geometry.getAngle(position, point);
     }
-    public void forward(double distance){
-        var velocity = new Point2D(Math.cos((this.angle-90)*Math.PI/180), Math.sin((this.angle-90)*Math.PI/180));
-        this.position = this.position.add(velocity.multiply(distance));
+    public Point2D getDirectionalVector(String direction){
+        String[] directions = new String[]{"forward", "right", "backward", "left"};
+        int multiplier = Arrays.asList(directions).indexOf(direction) - 1;
+        return new Point2D(Math.cos((this.angle+90*multiplier)*Math.PI/180), Math.sin((this.angle+90*multiplier)*Math.PI/180));
+    }
+    public void move(String direction, double distance){
+        this.position = position.add(getDirectionalVector(direction).multiply(distance));
     }
     public void setPosition(Point2D pos){
         this.position = pos;
@@ -71,5 +74,10 @@ public class Mob {
         rect.setTranslateY(-height/2);
         rect.setFill(this.color);
         return rect;
+    }
+    @Override
+    public String toString(){
+        String s = getClass().getName();
+        return String.format("%s @ %s", s.substring(s.lastIndexOf(".")+1), position);
     }
 }
