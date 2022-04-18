@@ -2,7 +2,6 @@ package game;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -19,11 +18,21 @@ public class App extends Application {
         game.update();
         var gameScene = new Scene(game, WIDTH, HEIGHT);
         stage.setScene(gameScene);
-        gameScene.setOnMouseMoved(event -> {
-            var x = event.getSceneX();
-            var y = event.getSceneY();
-            game.enemies.get(0).setPosition(new Point2D(x, y));
+        gameScene.setOnKeyPressed(event -> {
+            String s = event.getCode().toString();
+            if(!game.currentlyActiveKeys.contains(s))
+                game.currentlyActiveKeys.add(s);
         });
+        gameScene.setOnKeyReleased(event -> {
+            String s = event.getCode().toString();
+            if(game.currentlyActiveKeys.contains(s))
+                game.currentlyActiveKeys.remove(s);
+        });
+        // gameScene.setOnMouseMoved(event -> {
+        //     var x = event.getSceneX();
+        //     var y = event.getSceneY();
+        //     game.enemies.get(0).setPosition(new Point2D(x, y));
+        // });
         new AnimationTimer(){
             public void handle(long currentNanoTime){
                 game.update();

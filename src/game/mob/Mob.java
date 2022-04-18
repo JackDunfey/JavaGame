@@ -9,15 +9,32 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class Mob {
+    public static class Direction{
+        public boolean forward;
+        public boolean right;
+        public boolean left;
+        public boolean backward;
+        @Override
+        public String toString(){
+            return String.format("[Forward: %s, Right: %s, Backward: %s, Left: %s]", forward, right, left, backward);
+        }
+    }
     private Point2D position;
     private double angle;
+    protected double speed;
+    private float angle_speed;
     public static char width = 25;
     public static char height = 75;
     private Color color;
+    // forward, right, backward, left
+    public Direction direction;
     public Mob(Point2D position, Color color){
         Objects.requireNonNull(position);
         this.position = position;
+        this.direction = new Direction();
         this.color = color;
+        this.speed = 2;
+        this.angle_speed = 2;
     }
     public Point2D getPosition(){
         return position;
@@ -26,6 +43,16 @@ public class Mob {
         return angle;
     }
     // Movement (animate?)
+    public void update(){
+        if(this.direction.forward)
+            this.forward(this.speed);
+        if(this.direction.backward)
+            this.forward(-this.speed);
+        if(this.direction.right)
+            this.angle += this.angle_speed;
+        if(this.direction.left)
+            this.angle -= this.angle_speed;
+    }
     public void facePoint(Point2D point){
         // Change this to PID
         this.angle = Geometry.getAngle(position, point);
