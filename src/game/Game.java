@@ -17,6 +17,7 @@ public class Game extends Pane{
         this.player = new Player(new Point2D(App.WIDTH/2, App.HEIGHT/2));
         this.enemies = new ArrayList<Enemy>();
         this.enemies.add(new Zombie(new Point2D(0,0)));
+        this.enemies.add(new Zombie(new Point2D(App.WIDTH, App.HEIGHT)));
     }
 
     public void processKeys(){

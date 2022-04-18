@@ -3,6 +3,7 @@ package game;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -17,6 +18,7 @@ public class App extends Application {
         stage.setTitle("2D Minceraft");
         game.update();
         var gameScene = new Scene(game, WIDTH, HEIGHT);
+        gameScene.setFill(Color.BEIGE);
         stage.setScene(gameScene);
         gameScene.setOnKeyPressed(event -> {
             String s = event.getCode().toString();
