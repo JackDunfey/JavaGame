@@ -40,15 +40,12 @@ public class App extends Application {
                 game.currentlyActiveKeys.remove(s);
         });
         gameScene.setOnMouseClicked(event -> {
-            // game.player.shoot(event.getSceneX(), event.getSceneY());
             game.player.shoot();
         });
         new AnimationTimer(){
             public void handle(long currentNanoTime){
                 game.update();
-                double rx = getMousePosition(gameScene).getX() - WIDTH/2;
-                double angle = (2 * rx / WIDTH) * 180;
-                game.player.setAngle(angle);
+                game.player.facePoint(getMousePosition(gameScene));
             }
         }.start();
         stage.show();
