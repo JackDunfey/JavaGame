@@ -6,6 +6,6 @@ import javafx.scene.paint.Color;
 public class Zombie extends Enemy{
     public static final Color ZOMBIE_COLOR = Color.DARKGREEN;
     public Zombie(Point2D position){
-        super(position, ZOMBIE_COLOR, 1D, 500L);
+        super(position, ZOMBIE_COLOR, 1D, 1000L);
     }
 }

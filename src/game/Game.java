@@ -25,9 +25,10 @@ public class Game extends BorderPane{
     public HashMap<String, Boolean> currentlyActiveKeys = new HashMap<>();
     public Game(){
         this.player = new Player(new Point2D(App.WIDTH/2, App.HEIGHT/2));
+    }
+
+    public void init(){
         this.enemies = new ArrayList<Enemy>();
-        this.enemies.add(new Zombie(new Point2D(0,0)));
-        this.enemies.add(new Zombie(new Point2D(App.WIDTH, App.HEIGHT)));
         this.mob_spawnTimer = new Timer("Mob Spawner");
         mob_spawnTimer.schedule(new TimerTask() {
             Point2D getSpawnCoords(){
@@ -40,7 +41,7 @@ public class Game extends BorderPane{
                 } while (coords.getX() > App.WIDTH/3 && coords.getY() > App.HEIGHT/3 && coords.getX() < App.WIDTH*2/3 && coords.getY() < App.HEIGHT*2/3);
                 enemies.add(new Zombie(coords));
             }
-        }, 2500L, 750L);
+        }, 500L, 1000L);
     }
 
     public void processKeys(){
@@ -50,7 +51,7 @@ public class Game extends BorderPane{
     public void update(){
         if (player.isDead())
             end(false);
-        else if (player.getKillCount() >= 24)
+        else if (player.getKillCount() >= 10)
             end(true);
         processKeys();
         player.update();
