@@ -28,6 +28,7 @@ public class Game extends BorderPane{
     }
 
     public void init(){
+        char minSpawnDistance = 100;
         this.enemies = new ArrayList<Enemy>();
         this.mob_spawnTimer = new Timer("Mob Spawner");
         mob_spawnTimer.schedule(new TimerTask() {
@@ -38,13 +39,17 @@ public class Game extends BorderPane{
                 Point2D coords;
                 do{
                     coords = getSpawnCoords();
-                } while (coords.getX() > App.WIDTH/3 && coords.getY() > App.HEIGHT/3 && coords.getX() < App.WIDTH*2/3 && coords.getY() < App.HEIGHT*2/3);
+                } while (Math.sqrt((coords.getX()-player.getPosition().getX())*(coords.getX()-player.getPosition().getX())+(coords.getY()-player.getPosition().getY())*(coords.getY()-player.getPosition().getY())) <= minSpawnDistance);
                 enemies.add(new Zombie(coords));
             }
         }, 500L, 1000L);
     }
 
     public void processKeys(){
+        if(currentlyActiveKeys.containsKey("ESCAPE") && currentlyActiveKeys.get("ESCAPE")){
+            currentlyActiveKeys.put("ESCAPE", false);
+            this.ongoing = !this.ongoing;
+        }
         player.processKeys(currentlyActiveKeys);
     }
 
@@ -53,7 +58,6 @@ public class Game extends BorderPane{
             end(false);
         else if (player.getKillCount() >= 10)
             end(true);
-        processKeys();
         player.update();
         player.updateBullets();
         for(int i = enemies.size() - 1; i >= 0; i--){

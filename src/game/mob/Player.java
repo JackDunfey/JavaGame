@@ -66,10 +66,6 @@ public class Player extends Mob{
         direction.right = keys.containsKey("D");
         direction.ccw = keys.containsKey("LEFT");
         direction.cw = keys.containsKey("RIGHT");
-        if(keys.containsKey("SPACE") && keys.get("SPACE")){
-            shoot();
-            keys.put("SPACE", false);
-        }
     }
 
     @Override
