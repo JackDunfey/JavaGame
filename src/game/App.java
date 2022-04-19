@@ -44,8 +44,12 @@ public class App extends Application {
         });
         new AnimationTimer(){
             public void handle(long currentNanoTime){
-                game.update();
-                game.player.facePoint(getMousePosition(gameScene));
+                if(game.ongoing){
+                    game.update();
+                    game.player.facePoint(getMousePosition(gameScene));
+                } else {
+                    this.stop();
+                }
             }
         }.start();
         stage.show();

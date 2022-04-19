@@ -7,6 +7,6 @@ import javafx.scene.paint.Color;
 
 public abstract class Ally extends Mob{
     public Ally(Point2D position, Color color){
-        super(position, color);
+        super(position, color, 2);
     }
 }

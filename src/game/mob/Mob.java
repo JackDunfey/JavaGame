@@ -5,10 +5,14 @@ import java.util.Objects;
 
 import game.Geometry;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
+// Extend Pane?
 public class Mob {
     public static class Movement{
         public boolean forward;
@@ -24,18 +28,21 @@ public class Mob {
     }
     private Point2D position;
     private double angle;
-    protected double speed;
+    protected double speed = 2;
     public static char width = 25;
     public static char height = 75;
     private Color color;
+    private int health;
+    private boolean alive = true;
+    private int killCount;
     // forward, right, backward, left
     public Movement direction;
-    public Mob(Point2D position, Color color){
+    public Mob(Point2D position, Color color, int health){
         Objects.requireNonNull(position);
         this.position = position;
         this.direction = new Movement();
         this.color = color;
-        this.speed = 2;
+        this.health = health;
     }
     // Getters
 
@@ -47,6 +54,18 @@ public class Mob {
         return angle;
     }
 
+    public int getHealth(){
+        return health;
+    }
+
+    public int getKillCount(){
+        return killCount;
+    }
+
+    public boolean isDead(){
+        return !alive;
+    }
+
     // Setters
 
     public void setPosition(Point2D pos){
@@ -55,6 +74,13 @@ public class Mob {
 
     public void setAngle(double angle){
         this.angle = angle;
+    }
+
+    public void kill(Mob killer){
+        if(killer != null){
+            killer.killCount++;
+        }
+        this.alive = false;
     }
 
     // Movement (animate?)
@@ -72,19 +98,47 @@ public class Mob {
         if(this.direction.ccw)
             this.angle -= 1;
     }
+
     public void facePoint(Point2D point){
         // Change this to PID
         this.angle = Geometry.getAngle(position, point);
     }
+
     public Point2D getDirectionalVector(String direction){
         String[] directions = new String[]{"forward", "right", "backward", "left"};
         int multiplier = Arrays.asList(directions).indexOf(direction) - 1;
         return new Point2D(Math.cos((this.angle+90*multiplier)*Math.PI/180), Math.sin((this.angle+90*multiplier)*Math.PI/180));
     }
+
     public void move(String direction, double distance){
         this.position = position.add(getDirectionalVector(direction).multiply(distance));
     }
+
+    public void damage(double damage, Mob source){
+        this.health -= damage;
+        if(this.health <= 0)
+            this.kill(source);
+    }
+
+    public boolean isIntersecting(Mob other){
+        return Mob.isIntersecting(this, other);
+    }
+    
+    public static boolean isIntersecting(Mob a, Mob b){
+        return ((Path) Rectangle.intersect(a.getBodyRectangle(), b.getBodyRectangle())).getElements().size() > 0;
+    }
+
     public Node getNode(){
+        Group mob = new Group();
+
+        var text = new Text(position.getX(), position.getY(), Integer.toString(this.health));
+
+        mob.getChildren().addAll(getBodyRectangle(), text);
+
+        return mob;
+    }
+
+    public Rectangle getBodyRectangle(){
         Rectangle rect = new Rectangle(position.getX(), position.getY(), width, height);
         rect.setRotate(this.angle);
         rect.setTranslateX(-width/2);
@@ -92,6 +146,7 @@ public class Mob {
         rect.setFill(this.color);
         return rect;
     }
+
     @Override
     public String toString(){
         String s = getClass().getName();
