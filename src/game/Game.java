@@ -5,6 +5,7 @@ import game.mob.enemy.Enemy;
 import game.mob.enemy.Zombie;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
@@ -12,7 +13,7 @@ import javafx.scene.layout.Pane;
 public class Game extends Pane{
     Player player;
     ArrayList<Enemy> enemies;
-    public ArrayList<String> currentlyActiveKeys = new ArrayList<>();
+    public HashMap<String, Boolean> currentlyActiveKeys = new HashMap<>();
     public Game(){
         this.player = new Player(new Point2D(App.WIDTH/2, App.HEIGHT/2));
         this.enemies = new ArrayList<Enemy>();
@@ -21,10 +22,7 @@ public class Game extends Pane{
     }
 
     public void processKeys(){
-        player.direction.forward = currentlyActiveKeys.contains("W");
-        player.direction.left = currentlyActiveKeys.contains("A");
-        player.direction.backward = currentlyActiveKeys.contains("S");
-        player.direction.right = currentlyActiveKeys.contains("D");
+        player.processKeys(currentlyActiveKeys);
     }
 
     public void update(){
@@ -39,6 +37,7 @@ public class Game extends Pane{
         this.paint();
         // I'm looking for complication
     }
+    
     public void paint(){
         this.getChildren().clear();
         this.getChildren().addAll(player.getNode());

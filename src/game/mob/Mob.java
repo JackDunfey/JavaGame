@@ -10,11 +10,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class Mob {
-    public static class Direction{
+    public static class Movement{
         public boolean forward;
         public boolean right;
         public boolean left;
         public boolean backward;
+        public boolean cw; // Clockwise
+        public boolean ccw; // Counter-clockwise
         @Override
         public String toString(){
             return String.format("[Forward: %s, Right: %s, Backward: %s, Left: %s]", forward, right, left, backward);
@@ -27,20 +29,34 @@ public class Mob {
     public static char height = 75;
     private Color color;
     // forward, right, backward, left
-    public Direction direction;
+    public Movement direction;
     public Mob(Point2D position, Color color){
         Objects.requireNonNull(position);
         this.position = position;
-        this.direction = new Direction();
+        this.direction = new Movement();
         this.color = color;
         this.speed = 2;
     }
+    // Getters
+
     public Point2D getPosition(){
         return position;
     }
+
     public double getAngle(){
         return angle;
     }
+
+    // Setters
+
+    public void setPosition(Point2D pos){
+        this.position = pos;
+    }
+
+    public void setAngle(double angle){
+        this.angle = angle;
+    }
+
     // Movement (animate?)
     public void update(){
         if(this.direction.forward)
@@ -51,6 +67,10 @@ public class Mob {
             this.move("right", this.speed);
         if(this.direction.left)
             this.move("left", this.speed);
+        if(this.direction.cw)
+            this.angle += 1;
+        if(this.direction.ccw)
+            this.angle -= 1;
     }
     public void facePoint(Point2D point){
         // Change this to PID
@@ -63,9 +83,6 @@ public class Mob {
     }
     public void move(String direction, double distance){
         this.position = position.add(getDirectionalVector(direction).multiply(distance));
-    }
-    public void setPosition(Point2D pos){
-        this.position = pos;
     }
     public Node getNode(){
         Rectangle rect = new Rectangle(position.getX(), position.getY(), width, height);

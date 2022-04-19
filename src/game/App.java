@@ -31,21 +31,24 @@ public class App extends Application {
         stage.setScene(gameScene);
         gameScene.setOnKeyPressed(event -> {
             String s = event.getCode().toString();
-            if(!game.currentlyActiveKeys.contains(s))
-                game.currentlyActiveKeys.add(s);
+            if(!game.currentlyActiveKeys.containsKey(s))
+                game.currentlyActiveKeys.put(s, true);
         });
         gameScene.setOnKeyReleased(event -> {
             String s = event.getCode().toString();
-            if(game.currentlyActiveKeys.contains(s))
+            if(game.currentlyActiveKeys.containsKey(s))
                 game.currentlyActiveKeys.remove(s);
         });
         gameScene.setOnMouseClicked(event -> {
-            game.player.shoot(event.getSceneX(), event.getSceneY());
+            // game.player.shoot(event.getSceneX(), event.getSceneY());
+            game.player.shoot();
         });
         new AnimationTimer(){
             public void handle(long currentNanoTime){
                 game.update();
-                game.player.facePoint(getMousePosition(gameScene));
+                double rx = getMousePosition(gameScene).getX() - WIDTH/2;
+                double angle = (2 * rx / WIDTH) * 180;
+                game.player.setAngle(angle);
             }
         }.start();
         stage.show();

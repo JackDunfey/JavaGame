@@ -1,7 +1,5 @@
 package game;
 
-import javax.xml.namespace.QName;
-
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -16,6 +14,11 @@ public class Bullet {
     private double speed = 3;
     public Bullet(Point2D start, Point2D target){
         this.angle = Geometry.getAngle(start, target);
+        this.directionVector = target.subtract(start).normalize();
+        this.position = start;
+    }
+    public Bullet(Point2D start, double angle){
+        this.angle = angle;
         this.directionVector = new Point2D(Math.cos((angle-90)*Math.PI/180), Math.sin((angle-90)*Math.PI/180));
         this.position = start;
     }
