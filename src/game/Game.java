@@ -80,6 +80,7 @@ public class Game extends BorderPane{
         else if (player.getKillCount() >= level.needed_kills())
             end(true);
         player.update();
+        player.facePoint(app.getMousePosition(app.getScene()));
         for(int i = enemies.size() - 1; i >= 0; i--){
             var enemy = enemies.get(i);
             if(enemy.isDead()){
@@ -114,7 +115,7 @@ public class Game extends BorderPane{
             System.out.println("WON");
             if(!nextLevel()){
                 // gameOver logic here
-                // app.roleCredits();
+                app.rollCredits();
                 return;
             }
             new Timer().schedule(new TimerTask() {

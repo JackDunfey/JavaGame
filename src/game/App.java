@@ -1,5 +1,8 @@
 package game;
 
+import java.text.Normalizer.Form;
+
+import game.dependencies.FormattedText;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -7,6 +10,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,6 +25,7 @@ public class App extends Application {
     public AnimationTimer animationTimer;
 
     private Stage stage;
+    private Scene scene;
     private Scene titleScene;
 
     private Game game;
@@ -31,8 +36,15 @@ public class App extends Application {
             position.getY() >= 0 && position.getY() <= HEIGHT;
     }
 
+    private Point2D mousePosition;
     public Point2D getMousePosition(Scene scene){
-        return new Robot().getMousePosition().subtract(scene.getWindow().getX(), scene.getWindow().getY()).subtract(scene.getX(), scene.getY());
+        try{
+            return new Robot().getMousePosition().subtract(scene.getWindow().getX(), scene.getWindow().getY()).subtract(scene.getX(), scene.getY());
+        } catch (Exception e){
+            if(mousePosition == null)
+                throw e;
+            return mousePosition;
+        }
     }
 
     public App(){
@@ -53,7 +65,7 @@ public class App extends Application {
                 this.tutorial = new Tutorial(this);
                 var gameScene = new Scene(tutorial, WIDTH, HEIGHT);
                 gameScene.setFill(Color.BEIGE);
-                stage.setScene(gameScene);
+                setScene(gameScene);
                 gameScene.setOnKeyPressed(event -> {
                     String s = event.getCode().toString();
                     if(!tutorial.currentlyActiveKeys.containsKey(s))
@@ -92,9 +104,13 @@ public class App extends Application {
             this.game = new Game(this);
             var gameScene = new Scene(game, WIDTH, HEIGHT);
             gameScene.setFill(Color.BEIGE);
-            stage.setScene(gameScene);
+            setScene(gameScene);
             gameScene.setOnKeyPressed(event -> {
                 String s = event.getCode().toString();
+                if(s == "C"){
+                    this.rollCredits();
+                    return;
+                }
                 if(!game.currentlyActiveKeys.containsKey(s))
                     game.currentlyActiveKeys.put(s, true);
             });
@@ -110,17 +126,65 @@ public class App extends Application {
                 public void handle(long currentNanoTime){
                     game.processKeys();
                     game.update();
-                    game.player.facePoint(getMousePosition(gameScene));
                 }
             };
             animationTimer.start();
         });
-        stage.setScene(titleScene);
+        setScene(titleScene);
         stage.show();
     }
 
+    public Scene getScene(){
+        return scene;
+    }
+
+    // Switch scenes
+
+    public void setScene(Scene scene){
+        this.scene = scene;
+        this.stage.setScene(scene);
+    }
+
     public void showTitleScene(){
-        this.stage.setScene(titleScene);
+        setScene(titleScene);
+    }
+
+    public void rollCredits(){
+        if(this.animationTimer != null)
+            animationTimer.stop();
+
+        var credits_root = new VBox(15);
+            credits_root.setAlignment(Pos.TOP_CENTER);
+
+        // Add credits
+        var title = new Text("Credits");
+            title.setFont(new Font("Arial", 36));
+            credits_root.getChildren().add(title);
+        FormattedText heading = new FormattedText(new Font("Arial", 20));
+        FormattedText name = new FormattedText(Font.getDefault());
+        String[] headings = {
+            "Lead Developer",
+            "Graphic Designer",
+        };
+        String[][] input = {
+            {"pyjshtml"},
+            {"pyjshtml"},
+        };
+        for(int i = 0; i < input.length; i++){
+            credits_root.getChildren().add(heading.getTextFromString(headings[i]));
+            for(int j = 0; j < input[i].length; j++){
+                credits_root.getChildren().add(name.getTextFromString(input[i][j]));
+            }
+        }
+
+        // setScene
+        var container = new StackPane(credits_root);
+            StackPane.setAlignment(container, Pos.TOP_CENTER);
+        var creditsScreen = new Scene(container, App.WIDTH, App.HEIGHT);
+        creditsScreen.setOnContextMenuRequested(__ -> {
+            showTitleScene();
+        });
+        setScene(creditsScreen);
     }
 
     public static void main(String[] args) {
