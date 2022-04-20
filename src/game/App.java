@@ -38,6 +38,32 @@ public class App extends Application {
             play_btn.setMinWidth(buttonWidth);
         var tutorial_btn = new Button("Play Tutorial");
             tutorial_btn.setMinWidth(buttonWidth);
+            tutorial_btn.setOnAction(__ -> {
+                var tutorial = new Tutorial();
+                var gameScene = new Scene(tutorial, WIDTH, HEIGHT);
+                gameScene.setFill(Color.BEIGE);
+                stage.setScene(gameScene);
+                gameScene.setOnKeyPressed(event -> {
+                    String s = event.getCode().toString();
+                    if(!tutorial.currentlyActiveKeys.containsKey(s))
+                        tutorial.currentlyActiveKeys.put(s, true);
+                });
+                gameScene.setOnKeyReleased(event -> {
+                    String s = event.getCode().toString();
+                    if(tutorial.currentlyActiveKeys.containsKey(s))
+                    tutorial.currentlyActiveKeys.remove(s);
+                });
+                gameScene.setOnMouseClicked(event -> {
+                    tutorial.player.shoot();
+                });
+                new AnimationTimer(){
+                    public void handle(long currentNanoTime){
+                        tutorial.processKeys();
+                        tutorial.update();
+                        tutorial.player.facePoint(getMousePosition(gameScene));
+                    }
+                }.start();
+            });
         var exit_btn = new Button("Exit");
             exit_btn.setMinWidth(buttonWidth);
             exit_btn.setOnAction(__ -> {
@@ -67,7 +93,6 @@ public class App extends Application {
             gameScene.setOnMouseClicked(event -> {
                 game.player.shoot();
             });
-            game.init();
             new AnimationTimer(){
                 public void handle(long currentNanoTime){
                     game.processKeys();

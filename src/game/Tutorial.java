@@ -17,43 +17,52 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public class Game extends BorderPane{
+public class Tutorial extends BorderPane{
     Player player;
-    ArrayList<Enemy> enemies;
+    ArrayList<Enemy> enemies = new ArrayList<>();
     Timer mob_spawnTimer;
     public boolean ongoing = true;
     public HashMap<String, Boolean> currentlyActiveKeys = new HashMap<>();
-    private final Level[] levels;
-    private char level_index;
-    private Level level;
-    public Game(){
-        levels = new Level[]{new Level("Level 1", 15, 1000L, 200D), new Level("Level 2", 32, 750L, 100D)};
-        level = levels[level_index];
-        this.init();
+    private int counter;
+    private String helpText = "Zombies appear as green rectangles use your mouse to aim and click to shoot one.";
+
+    private static int[] needed_kills = {1, 1, 5};
+
+    public Tutorial(){
+        this.player = new Player(new Point2D(App.WIDTH/2, App.HEIGHT/2));
+        new Timer().schedule(new TimerTask() {
+            public void run(){
+                spawnZombie();
+            }
+        }, 2000L);
     }
 
-    public static Point2D getRandomPoint(){
+    private Point2D generateSpawnCoords(){
         return new Point2D(Math.random() * App.WIDTH, Math.random()*App.HEIGHT);
     }
 
     private void spawnZombie(){
         Point2D coords;
         do{
-            coords = getRandomPoint();
-        } while (Math.sqrt(Math.pow(coords.getX()-player.getPosition().getX(),2)*+Math.pow(coords.getY()-player.getPosition().getY(),2)) <= 250 || coords.getY() > App.HEIGHT-175);
+            coords = generateSpawnCoords();
+        } while (Math.sqrt(Math.pow(coords.getX()-player.getPosition().getX(),2)*+Math.pow(coords.getY()-player.getPosition().getY(),2)) <= 250 && coords.getY() < 175);
         enemies.add(new Zombie(coords));
         this.enemies.add(new Zombie(coords));
     }
 
     public void init(){
-        this.player = new Player(new Point2D(App.WIDTH/2, App.HEIGHT/2)); // Probably a bad idea
         this.enemies = new ArrayList<Enemy>();
-        this.mob_spawnTimer = new Timer("Mob Spawner");
-        mob_spawnTimer.schedule(new TimerTask() {
-            public void run(){
-                spawnZombie();
-            }
-        }, 500L, level.spawning_rate());
+        if(counter == 1){
+            spawnZombie();
+            this.helpText += " Zombies will attempt to chase you around. If they touch you, you will lose health. Shoot them as quickly as you can!";
+        } else if(counter == 2){
+            helpText = "Quick kill five zombies";
+            new Timer("Level 2").schedule(new TimerTask() {
+                public void run(){
+                    spawnZombie();
+                }
+            }, 1000L, 1250L);
+        }
     }
 
     public void processKeys(){
@@ -61,7 +70,7 @@ public class Game extends BorderPane{
             currentlyActiveKeys.put("ESCAPE", false);
             this.ongoing = !this.ongoing;
         }
-        player.processKeys(currentlyActiveKeys);
+        // player.processKeys(currentlyActiveKeys);
     }
 
     public void update(){
@@ -69,7 +78,7 @@ public class Game extends BorderPane{
             return;
         if (player.isDead())
             end(false);
-        else if (player.getKillCount() >= level.needed_kills())
+        else if (player.getKillCount() >= needed_kills[counter])
             end(true);
         player.update();
         for(int i = enemies.size() - 1; i >= 0; i--){
@@ -78,7 +87,9 @@ public class Game extends BorderPane{
                 enemies.remove(i);
                 continue;
             }
-            enemy.direction.forward = true;
+            if(counter > 0){
+                enemy.direction.forward = true;
+            }
             enemy.update();
             enemy.facePoint(player.getPosition());
             player.getBullets().forEach(bullet -> {
@@ -86,7 +97,7 @@ public class Game extends BorderPane{
                     bullet.kill();
                     enemy.damage(bullet.getDamage(), player);
                 }
-            });
+            }); 
             if(enemy.isIntersecting(player))
                 enemy.attackPlayer(player);
         }
@@ -95,10 +106,14 @@ public class Game extends BorderPane{
 
     public void end(boolean won){
         ongoing = false;
+        player = new Player(new Point2D(App.WIDTH/2, App.HEIGHT/2)); // Probably a bad idea
         if(won){
             System.out.println("WON");
-            if(++level_index >= levels.length)
-                System.exit(69420);
+            if(++counter >= needed_kills.length){
+                // TODO: Tutorial finished logic here
+                helpText = "You finished the tutorial!";
+                return;
+            }
             new Timer().schedule(new TimerTask() {
                 public void run(){
                     // Show between levels scene
@@ -113,10 +128,15 @@ public class Game extends BorderPane{
     
     public void paint(){
         var pane = new Pane(player.getNode());
-        enemies.forEach(e -> pane.getChildren().add(e.getNode()));
-        this.setCenter(pane);
+            enemies.forEach(e -> pane.getChildren().add(e.getNode()));
+            this.setCenter(pane);
         var headerPane = new HBox();
-        headerPane.getChildren().add(new Text("Kill Count " + player.getKillCount()));
+            headerPane.getChildren().add(new Text("Kill Count " + player.getKillCount()));
+            var text = new Text(this.helpText);
+            text.setWrappingWidth(App.WIDTH);
+            var helpPane = new Pane(text);
+                helpPane.setMinHeight(100);
         this.setTop(headerPane);
+        this.setBottom(helpPane);
     }
 }
