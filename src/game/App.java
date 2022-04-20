@@ -19,19 +19,30 @@ public class App extends Application {
     public static final int WIDTH = 600;
     public static final int HEIGHT = 600;
     public AnimationTimer animationTimer;
+
+    private Stage stage;
+    private Scene titleScene;
+
+    private Game game;
+    private Tutorial tutorial;
+
     public static boolean isValidPosition(Point2D position){
         return position.getX() >= 0 && position.getX() <= WIDTH &&
             position.getY() >= 0 && position.getY() <= HEIGHT;
     }
+
     public Point2D getMousePosition(Scene scene){
         return new Robot().getMousePosition().subtract(scene.getWindow().getX(), scene.getWindow().getY()).subtract(scene.getX(), scene.getY());
     }
-    private Game game;
+
     public App(){
-        this.game = new Game();
+        this.game = new Game(this);
+        this.tutorial = new Tutorial(this);
     }
+
     @Override
     public void start(Stage stage) throws Exception{
+        this.stage = stage;
         char buttonWidth = 200;
         stage.setTitle("2D Minceraft");
         var play_btn = new Button("Play Game");
@@ -39,7 +50,7 @@ public class App extends Application {
         var tutorial_btn = new Button("Play Tutorial");
             tutorial_btn.setMinWidth(buttonWidth);
             tutorial_btn.setOnAction(__ -> {
-                var tutorial = new Tutorial();
+                this.tutorial = new Tutorial(this);
                 var gameScene = new Scene(tutorial, WIDTH, HEIGHT);
                 gameScene.setFill(Color.BEIGE);
                 stage.setScene(gameScene);
@@ -56,13 +67,14 @@ public class App extends Application {
                 gameScene.setOnMouseClicked(event -> {
                     tutorial.player.shoot();
                 });
-                new AnimationTimer(){
+                this.animationTimer = new AnimationTimer(){
                     public void handle(long currentNanoTime){
                         tutorial.processKeys();
                         tutorial.update();
                         tutorial.player.facePoint(getMousePosition(gameScene));
                     }
-                }.start();
+                };
+                animationTimer.start();
             });
         var exit_btn = new Button("Exit");
             exit_btn.setMinWidth(buttonWidth);
@@ -75,8 +87,9 @@ public class App extends Application {
             title_buttons.setAlignment(Pos.CENTER);
         var title_root = new StackPane(title_buttons);
             StackPane.setAlignment(title_root, Pos.CENTER);
-        var titleScene = new Scene(title_root, WIDTH, HEIGHT);
+        this.titleScene = new Scene(title_root, WIDTH, HEIGHT);
         play_btn.setOnAction(__ -> {
+            this.game = new Game(this);
             var gameScene = new Scene(game, WIDTH, HEIGHT);
             gameScene.setFill(Color.BEIGE);
             stage.setScene(gameScene);
@@ -93,17 +106,23 @@ public class App extends Application {
             gameScene.setOnMouseClicked(event -> {
                 game.player.shoot();
             });
-            new AnimationTimer(){
+            this.animationTimer = new AnimationTimer(){
                 public void handle(long currentNanoTime){
                     game.processKeys();
                     game.update();
                     game.player.facePoint(getMousePosition(gameScene));
                 }
-            }.start();
+            };
+            animationTimer.start();
         });
         stage.setScene(titleScene);
         stage.show();
     }
+
+    public void showTitleScene(){
+        this.stage.setScene(titleScene);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

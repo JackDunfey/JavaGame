@@ -28,7 +28,10 @@ public class Tutorial extends BorderPane{
 
     private static int[] needed_kills = {1, 1, 5};
 
-    public Tutorial(){
+    private App app;
+
+    public Tutorial(App app){
+        this.app = app;
         this.player = new Player(new Point2D(App.WIDTH/2, App.HEIGHT/2));
         new Timer().schedule(new TimerTask() {
             public void run(){
@@ -110,7 +113,10 @@ public class Tutorial extends BorderPane{
             System.out.println("WON");
             if(++counter >= needed_kills.length){
                 // TODO: Tutorial finished logic here
-                helpText = "You finished the tutorial!";
+                helpText = "You finished the tutorial! Congratulations!";
+                this.setOnMouseClicked(__ -> {
+                    app.showTitleScene();
+                });
                 return;
             }
             new Timer().schedule(new TimerTask() {
@@ -131,10 +137,10 @@ public class Tutorial extends BorderPane{
             this.setCenter(pane);
         var headerPane = new HBox();
             headerPane.getChildren().add(new Text("Kill Count " + player.getKillCount()));
-            var text = new Text(this.helpText);
-            text.setWrappingWidth(App.WIDTH);
-            var helpPane = new Pane(text);
-                helpPane.setMinHeight(100);
+        var text = new Text(this.helpText);
+        text.setWrappingWidth(App.WIDTH);
+        var helpPane = new Pane(text);
+            helpPane.setMinHeight(100);
         this.setTop(headerPane);
         this.setBottom(helpPane);
     }
