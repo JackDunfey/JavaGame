@@ -76,6 +76,10 @@ public class Mob {
         this.angle = angle;
     }
 
+    protected void setKills(int kills){
+        this.killCount = kills;
+    }
+
     public void kill(Mob killer){
         if(killer != null){
             killer.killCount++;

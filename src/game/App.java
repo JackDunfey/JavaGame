@@ -36,8 +36,8 @@ public class App extends Application {
         stage.setTitle("2D Minceraft");
         var play_btn = new Button("Play Game");
             play_btn.setMinWidth(buttonWidth);
-        var settings_btn = new Button("Play Tutorial");
-            settings_btn.setMinWidth(buttonWidth);
+        var tutorial_btn = new Button("Play Tutorial");
+            tutorial_btn.setMinWidth(buttonWidth);
         var exit_btn = new Button("Exit");
             exit_btn.setMinWidth(buttonWidth);
             exit_btn.setOnAction(__ -> {
@@ -45,7 +45,7 @@ public class App extends Application {
             });
         var title_text = new Text("World's Coolest Game");
             title_text.setFont(new Font("Arial", 48));
-        var title_buttons = new VBox(18, title_text, play_btn, settings_btn, exit_btn);
+        var title_buttons = new VBox(18, title_text, play_btn, tutorial_btn, exit_btn);
             title_buttons.setAlignment(Pos.CENTER);
         var title_root = new StackPane(title_buttons);
             StackPane.setAlignment(title_root, Pos.CENTER);
@@ -71,10 +71,8 @@ public class App extends Application {
             new AnimationTimer(){
                 public void handle(long currentNanoTime){
                     game.processKeys();
-                    if(game.ongoing){
-                        game.update();
-                        game.player.facePoint(getMousePosition(gameScene));
-                    }
+                    game.update();
+                    game.player.facePoint(getMousePosition(gameScene));
                 }
             }.start();
         });
