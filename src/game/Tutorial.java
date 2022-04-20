@@ -47,7 +47,6 @@ public class Tutorial extends BorderPane{
             coords = generateSpawnCoords();
         } while (Math.sqrt(Math.pow(coords.getX()-player.getPosition().getX(),2)*+Math.pow(coords.getY()-player.getPosition().getY(),2)) <= 250 && coords.getY() < 175);
         enemies.add(new Zombie(coords));
-        this.enemies.add(new Zombie(coords));
     }
 
     public void init(){
