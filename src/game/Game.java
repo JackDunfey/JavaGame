@@ -65,7 +65,6 @@ public class Game extends BorderPane{
         else if (player.getKillCount() >= level.needed_kills())
             end(true);
         player.update();
-        player.updateBullets();
         for(int i = enemies.size() - 1; i >= 0; i--){
             var enemy = enemies.get(i);
             if(enemy.isDead()){
