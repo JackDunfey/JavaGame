@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import game.Geometry;
-import game.Sound;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
