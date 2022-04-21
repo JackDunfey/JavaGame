@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import game.Geometry;
+import game.Sound;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -83,6 +84,11 @@ public class Mob {
     public void kill(Mob killer){
         if(killer != null){
             killer.killCount++;
+            try{
+                new Sound("resources/sounds/explode.wav").play();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
         this.alive = false;
     }
