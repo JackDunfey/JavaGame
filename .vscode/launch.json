@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Sound",
+            "request": "launch",
+            "mainClass": "game.Sound",
+            "projectName": "JavaGame_5fd7b407"
+        },
+        {
+            "type": "java",
             "name": "Launch SoundTest",
             "request": "launch",
             "mainClass": "game.SoundTest",

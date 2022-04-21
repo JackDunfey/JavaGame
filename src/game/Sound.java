@@ -21,7 +21,6 @@ public class Sound {
         File f = new File(filename);
         var clip = AudioSystem.getClip();
             clip.open(AudioSystem.getAudioInputStream(f.getAbsoluteFile()));
-            clip.loop(1);
         return clip;
     }
 
@@ -128,6 +127,5 @@ public class Sound {
 		audioInputStream = AudioSystem.getAudioInputStream(
 		new File(filePath).getAbsoluteFile());
 		clip.open(audioInputStream);
-		clip.loop(1);
 	}
 }

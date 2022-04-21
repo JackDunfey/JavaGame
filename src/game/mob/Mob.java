@@ -84,11 +84,11 @@ public class Mob {
     public void kill(Mob killer){
         if(killer != null){
             killer.killCount++;
-            try{
-                new Sound("resources/sounds/explode.wav").play();
-            } catch (Exception e){
-                e.printStackTrace();
-            }
+            // try{
+            //     new Sound("resources/sounds/explode.wav").play();
+            // } catch (Exception e){
+            //     e.printStackTrace();
+            // }
         }
         this.alive = false;
     }
