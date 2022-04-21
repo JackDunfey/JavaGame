@@ -1,7 +1,5 @@
 package game;
 
-import java.text.Normalizer.Form;
-
 import game.dependencies.FormattedText;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -10,7 +8,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;

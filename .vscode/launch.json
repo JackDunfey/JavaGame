@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch SoundTest",
+            "request": "launch",
+            "mainClass": "game.SoundTest",
+            "projectName": "JavaGame_5fd7b407"
+        },
+        {
+            "type": "java",
             "name": "Launch MouseTest",
             "request": "launch",
             "vmArgs": "--module-path C:/Users/jackd/Downloads/openjfx-18_windows-x64_bin-sdk/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml",
