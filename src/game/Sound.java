@@ -60,6 +60,8 @@ public class Sound {
 	// Method to play the audio
 	public void play()
 	{
+		if(!FeatureFlags.PLAY_SOUND)
+			return;
 		clip.start();
 		status = SoundStatus.PLAYING;
 	}
