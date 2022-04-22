@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -129,17 +130,24 @@ public class Game extends BorderPane{
 
         }
     }
-    
+
     public void paint(){
         var pane = new Pane(player.getNode());
             enemies.forEach(e -> pane.getChildren().add(e.getNode()));
             this.setCenter(pane);
         var headerPane = new HBox();
-            Region filler = new Region();
-                HBox.setHgrow(filler, Priority.ALWAYS);
             var left = new Text("Kill Count " + player.getKillCount());
+            var center = new Text(String.format("Accuracy: %.2f", player.getAccuracy()) + "%");
             var right = new Text(level.name());
-            headerPane.getChildren().addAll(left, filler, right);
+            Node[] nodes = {left, center, right};
+            for(char i = 0; i < nodes.length; i++){
+                headerPane.getChildren().add(nodes[i]);
+                if(i == nodes.length - 1)
+                    break;
+                Region filler = new Region();
+                    HBox.setHgrow(filler, Priority.ALWAYS);
+                headerPane.getChildren().add(filler);
+            }
         this.setTop(headerPane);
     }
 }

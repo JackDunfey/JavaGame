@@ -14,6 +14,8 @@ abstract public class ShooterMob extends Mob {
     private boolean canShoot = true;
     private long shootingDelay = 250L; // (ms)
     private ArrayList<Bullet> bullets = new ArrayList<>();
+    private int bulletCounter;
+
     public ShooterMob(Point2D position, Color color, int health){
         super(position, color, health);
     }
@@ -36,11 +38,16 @@ abstract public class ShooterMob extends Mob {
         for(int i = 0; i < 3; i++)
             bullet.update();
         this.bullets.add(bullet);
+        this.bulletCounter++;
         this.justShot();
     }
 
     public ArrayList<Bullet> getBullets(){
         return this.bullets;
+    }
+
+    public int getBulletCounter(){
+        return bulletCounter;
     }
 
     protected void justShot(){

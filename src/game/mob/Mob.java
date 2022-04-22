@@ -35,6 +35,7 @@ public class Mob {
     private int health;
     private boolean alive = true;
     private int killCount;
+    private int hits;
     // forward, right, backward, left
     public Movement direction;
     public Mob(Point2D position, Color color, int health){
@@ -60,6 +61,10 @@ public class Mob {
 
     public int getKillCount(){
         return killCount;
+    }
+
+    public int getHits(){
+        return hits;
     }
 
     public boolean isDead(){
@@ -125,6 +130,8 @@ public class Mob {
 
     public void damage(double damage, Mob source){
         this.health -= damage;
+        if(source != null)
+            source.hits++;
         if(this.health <= 0)
             this.kill(source);
     }

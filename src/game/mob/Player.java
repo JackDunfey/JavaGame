@@ -36,7 +36,15 @@ public class Player extends ShooterMob{
         } catch (Exception e){
             e.printStackTrace();
         }
-        
+    }
+
+    public double getAccuracy(){
+        try {
+            System.out.println(this.getHits() + " / " + this.getBulletCounter());
+            return 100d * this.getHits() / this.getBulletCounter();
+        } catch (ArithmeticException ex){
+            return 0;
+        }
     }
 
     @Override
